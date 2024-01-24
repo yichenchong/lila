@@ -47,7 +47,7 @@ jobs:
         with:
           files_yaml: |
             env:
-              .github/**
+              .github/**/*
             backend:
               app/**
               bin/**

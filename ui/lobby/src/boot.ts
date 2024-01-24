@@ -7,7 +7,7 @@ export function initModule(opts: LobbyOpts) {
   opts.tableElement = document.querySelector('.lobby__table') as HTMLElement;
   opts.pools = [
     // mirrors modules/pool/src/main/PoolList.scala
-    { id: '1+3', lim: 1, inc: 3, perf: 'Bullet' },
+    { id: '1+2', lim: 1, inc: 2, perf: 'Bullet' },
     { id: '2+1', lim: 2, inc: 1, perf: 'Bullet' },
     { id: '3+0', lim: 3, inc: 0, perf: 'Blitz' },
     { id: '3+2', lim: 3, inc: 2, perf: 'Blitz' },

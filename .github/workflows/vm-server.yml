@@ -37,25 +37,25 @@ jobs:
         with:
           files_yaml: |
             env:
-              .github/**
+            - .github/**
             backend:
-              app/**
-              bin/**
-              conf/**
-              modules/**
-              project/**
-              translation/**
-              build.sbt
-              lila
-              crowdin.yml
-              .gitmodules
-              .gitattributes
+            - app/**
+            - bin/**
+            - conf/**
+            - modules/**
+            - project/**
+            - translation/**
+            - build.sbt
+            - lila
+            - crowdin.yml
+            - .gitmodules
+            - .gitattributes
             frontend:
-              public/**
-              ui/**
-              pnpm-lock.yaml
-              pnpm-workspace.yaml
-              package.json
+            - public/**
+            - ui/**
+            - pnpm-lock.yaml
+            - pnpm-workspace.yaml
+            - package.json
       - name: List Env Changes
         env:
           ENV_CH: ${{ steps.changed-files-yaml.outputs.env_all_changed_files }}

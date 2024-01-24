@@ -7,21 +7,20 @@ name: VM Server Deployment
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 permissions:
   contents: read
 
 jobs:
-
   clean:
     runs-on: [self-hosted, linux]
     steps:
-    - name: Kill server
-      run: pkill -f "sbt" &
-      
+      - name: Kill server
+        run: pkill -f "sbt" &
+
   rebuild-lila:
     needs: clean
     runs-on: [self-hosted, linux]
@@ -29,46 +28,46 @@ jobs:
       run:
         working-directory: /home/ycc21/lila
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: 'true'
-    - name: Get all changed files
-      id: changed-files
-      uses: tj-actions/changed-files@v42
-    - name: Categorise changed files
-      id: changed-files-yaml
-      uses: tj-actions/changed-files@v42
-      with:
-        files_yaml: |
-          env:
-            .github/**
-          backend:
-            app/**
-            bin/**
-            conf/**
-            modules/**
-            project/**
-            translation/**
-            build.sbt
-            lila
-            crowdin.yml
-            .gitmodules
-            .gitattributes
-          frontend:
-            public/**
-            ui/**
-            pnpm-lock.yaml
-            pnpm-workspace.yaml
-            package.json
-    - name: Pull latest
-      run: git pull
-    - name: UI Rebuild
-      if: steps.changed-files-yaml.outputs.frontend_any_changed == 'true'
-      run: ui/build > ../logs/ui-build.log 2> ../logs/ui-build-error.log
-    - name: Recompile
-      if: steps.changed-files-yaml.outputs.frontend_any_changed == 'true' || steps.changed-files-yaml.outputs.backend_any_changed == 'true'
-      run: ./lila compile > ../logs/lila-compile.log 2> ../logs/lila-compile-error.log
-      
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - name: Get all changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v42
+      - name: Categorise changed files
+        id: changed-files-yaml
+        uses: tj-actions/changed-files@v42
+        with:
+          files_yaml: |
+            env:
+              .github/**
+            backend:
+              app/**
+              bin/**
+              conf/**
+              modules/**
+              project/**
+              translation/**
+              build.sbt
+              lila
+              crowdin.yml
+              .gitmodules
+              .gitattributes
+            frontend:
+              public/**
+              ui/**
+              pnpm-lock.yaml
+              pnpm-workspace.yaml
+              package.json
+      - name: Pull latest
+        run: git pull
+      - name: UI Rebuild
+        if: steps.changed-files-yaml.outputs.frontend_any_changed == 'true'
+        run: ui/build > ../logs/ui-build.log 2> ../logs/ui-build-error.log
+      - name: Recompile
+        if: steps.changed-files-yaml.outputs.frontend_any_changed == 'true' || steps.changed-files-yaml.outputs.backend_any_changed == 'true'
+        run: ./lila compile > ../logs/lila-compile.log 2> ../logs/lila-compile-error.log
+
   restart-run:
     needs: [rebuild-lila, clean]
     runs-on: [self-hosted, linux]
@@ -80,4 +79,3 @@ jobs:
         run: RUNNER_TRACKING_ID="" && cd ./lila-ws && sbt run -Dcsrf.origin=https://localhost:9663 > ../logs/lila-ws.log 2> ../logs/lila-ws-error.log &
       - name: Restart lila server
         run: RUNNER_TRACKING_ID="" && cd lila && ./lila run > ../logs/lila.log 2> ../logs/lila-error.log &
-    

@@ -7,9 +7,9 @@ name: VM Server Deployment
 
 on:
   push:
-    branches: ["master"]
+    branches: ['master']
   pull_request:
-    branches: ["master"]
+    branches: ['master']
 
 permissions:
   contents: read
@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: "true"
+          submodules: 'true'
       - name: Get all changed files
         id: changed-files
         uses: tj-actions/changed-files@v42

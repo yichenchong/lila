@@ -1,0 +1,52 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: VM Server Deployment
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+
+  clean:
+    runs-on: [self-hosted, linux]
+    steps:
+    - name: Kill server
+      run: pkill -f "sbt" &
+      
+  rebuild-lila:
+    needs: clean
+    runs-on: [self-hosted, linux]
+    defaults:
+      run:
+        shell: bash
+        working-directory: /home/ycc21/lila
+    steps:
+    - name: Pull latest
+      run: git pull
+    - name: UI Rebuild
+      run: ui/build > ../logs/ui-build.log 2> ../logs/ui-build-error.log
+    - name: Recompile
+      run: ./lila compile > ../logs/lila-compile.log 2> ../logs/lila-compile-error.log
+      
+  restart-run:
+    needs: [rebuild-lila, clean]
+    runs-on: [self-hosted, linux]
+    defaults:
+      run:
+        shell: bash
+        working-directory: /home/ycc21
+    steps:
+      - name: Restart lila-ws
+        run: cd ./lila-ws && sbt run -Dcsrf.origin=https://localhost:9663 > ../logs/lila-ws.log 2> ../logs/lila-ws-error.log &
+      - name: Restart lila server
+        run: cd lila && ./lila run > ../logs/lila.log 2> ../logs/lila-error.log &
+    

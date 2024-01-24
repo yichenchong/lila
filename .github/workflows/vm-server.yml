@@ -76,6 +76,6 @@ jobs:
         working-directory: /home/ycc21
     steps:
       - name: Restart lila-ws
-        run: RUNNER_TRACKING_ID="" && cd ./lila-ws && sbt run -Dcsrf.origin=https://localhost:9663 > ../logs/lila-ws.log 2> ../logs/lila-ws-error.log &
+        run: RUNNER_TRACKING_ID="" && cd ./lila-ws && sbt run -Dcsrf.origin=http://localhost:9663 > ../logs/lila-ws.log 2> ../logs/lila-ws-error.log &
       - name: Restart lila server
         run: RUNNER_TRACKING_ID="" && cd lila && ./lila run > ../logs/lila.log 2> ../logs/lila-error.log &
